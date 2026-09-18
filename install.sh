@@ -40,6 +40,27 @@ fi
 echo "Enabling plugin..."
 omarchy plugin enable kaun.power-profiles 2>/dev/null || true
 
+# Add plugin to bar layout if not already present
+SHELL_JSON="$HOME/.config/omarchy/shell.json"
+if [[ -f "$SHELL_JSON" ]]; then
+  if ! grep -q '"kaun.power-profiles"' "$SHELL_JSON"; then
+    echo "Adding plugin to bar layout..."
+    python3 << 'PYEOF'
+import json, os
+path = os.path.expanduser("~/.config/omarchy/shell.json")
+with open(path, "r") as f:
+    config = json.load(f)
+right = config.get("bar", {}).get("layout", {}).get("right", [])
+right = [item for item in right if item.get("id") != "omarchy.power"]
+if not any(item.get("id") == "kaun.power-profiles" for item in right):
+    right.append({"id": "kaun.power-profiles"})
+config["bar"]["layout"]["right"] = right
+with open(path, "w") as f:
+    json.dump(config, f, indent=2)
+PYEOF
+  fi
+fi
+
 # Restart shell to load the plugin
 echo "Restarting shell..."
 omarchy restart shell 2>/dev/null || true

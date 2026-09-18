@@ -11,6 +11,26 @@ POLICY_DIR="/usr/share/polkit-1/actions"
 
 echo "Removing extra.power-profiles plugin..."
 
+# Restore default power widget in bar layout BEFORE disabling
+SHELL_JSON="$HOME/.config/omarchy/shell.json"
+if [[ -f "$SHELL_JSON" ]]; then
+  if grep -q '"kaun.power-profiles"' "$SHELL_JSON"; then
+    echo "Restoring default power widget..."
+    python3 << 'PYEOF'
+import json, os
+path = os.path.expanduser("~/.config/omarchy/shell.json")
+with open(path, "r") as f:
+    config = json.load(f)
+right = config.get("bar", {}).get("layout", {}).get("right", [])
+config["bar"]["layout"]["right"] = [item for item in right if item.get("id") != "kaun.power-profiles"]
+if not any(item.get("id") == "omarchy.power" for item in config["bar"]["layout"]["right"]):
+    config["bar"]["layout"]["right"].append({"id": "omarchy.power"})
+with open(path, "w") as f:
+    json.dump(config, f, indent=2)
+PYEOF
+  fi
+fi
+
 # Disable the plugin
 echo "Disabling plugin..."
 omarchy plugin disable kaun.power-profiles 2>/dev/null || true

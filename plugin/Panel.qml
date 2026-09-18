@@ -9,8 +9,8 @@ import "PlatformModeModel.js" as PlatformModel
 
 Panel {
   id: root
-  moduleName: "kaun.power"
-  ipcTarget: "kaun.power"
+  moduleName: "kaun.power-profiles"
+  ipcTarget: "kaun.power-profiles"
   manageIpc: false
   property var batteryInfo: ({})
   property var systemInfo: ({})
@@ -214,7 +214,7 @@ Panel {
   }
 
   IpcHandler {
-    target: "kaun.power"
+    target: "kaun.power-profiles"
 
     function open() { root.open() }
     function close() { root.close() }

@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# install.sh - Install kaun.power plugin for Omarchy
+# install.sh - Install extra.power-profiles plugin for Omarchy
 # Usage: ./install.sh
 
 set -e
 
-PLUGIN_DIR="$HOME/.config/omarchy/plugins/kaun.power"
+PLUGIN_DIR="$HOME/.config/omarchy/plugins/kaun.power-profiles"
 SCRIPTS_DIR="$HOME/.local/bin"
 POLICY_DIR="/usr/share/polkit-1/actions"
 
-echo "Installing kaun.power plugin..."
+echo "Installing extra.power-profiles plugin..."
 
 # Create plugin directory
 mkdir -p "$PLUGIN_DIR"
@@ -29,18 +29,23 @@ chmod +x "$SCRIPTS_DIR/omarchy-platform-mode-set"
 
 # Install polkit policy for passwordless mode switching
 echo "Installing polkit policy (requires sudo)..."
-sudo cp polkit/org.kaun.omarchy.platform-mode-set.policy "$POLICY_DIR/"
+if sudo -n true 2>/dev/null; then
+  sudo cp polkit/org.kaun.omarchy.platform-mode-set.policy "$POLICY_DIR/"
+else
+  echo "Warning: Cannot install polkit policy without sudo. Please run:"
+  echo "  sudo cp polkit/org.kaun.omarchy.platform-mode-set.policy $POLICY_DIR/"
+fi
 
 # Enable the plugin
 echo "Enabling plugin..."
-omarchy plugin enable kaun.power 2>/dev/null || true
+omarchy plugin enable kaun.power-profiles 2>/dev/null || true
 
 # Restart shell to load the plugin
 echo "Restarting shell..."
 omarchy restart shell 2>/dev/null || true
 
 echo ""
-echo "Done! kaun.power plugin installed."
+echo "Done! extra.power-profiles plugin installed."
 echo "Click the battery icon in the bar to see EXTRA POWER PROFILES."
 echo ""
 echo "Note: Changing modes requires authentication (polkit dialog)."

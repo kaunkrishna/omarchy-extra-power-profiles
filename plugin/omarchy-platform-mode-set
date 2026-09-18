@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Sets the platform power mode.
+# Usage: omarchy-platform-mode-set <mode>
+# Modes: low-power, balanced, performance, max-power, custom (varies by hardware)
+
+mode="${1:-}"
+
+PROFILE_FILE="/sys/firmware/acpi/platform_profile"
+CHOICES_FILE="/sys/firmware/acpi/platform_profile_choices"
+
+if [[ -z "$mode" ]]; then
+  echo "Usage: omarchy-platform-mode-set <mode>" >&2
+  exit 1
+fi
+
+if [[ ! -r "$CHOICES_FILE" ]]; then
+  echo "Platform profile not available on this system" >&2
+  exit 1
+fi
+
+choices=$(cat "$CHOICES_FILE" 2>/dev/null)
+found=0
+for choice in $choices; do
+  if [[ "$choice" == "$mode" ]]; then
+    found=1
+    break
+  fi
+done
+
+if [[ $found -eq 0 ]]; then
+  echo "Mode '$mode' is not available. Choices: $choices" >&2
+  exit 1
+fi
+
+if [[ -w "$PROFILE_FILE" ]]; then
+  echo "$mode" > "$PROFILE_FILE"
+else
+  echo "$mode" | pkexec tee "$PROFILE_FILE" > /dev/null
+fi

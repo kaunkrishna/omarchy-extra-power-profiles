@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "extra.power-profiles",
+  "name": "Extra Power Profiles",
+  "version": "1.0.0",
+  "author": "kaun",
+  "description": "Extra power profiles (Quiet, Turbo, Custom) for laptops with ACPI platform_profile support",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Extra Power Profiles",
+    "description": "Extra power profiles for laptops with ACPI platform_profile support",
+    "category": "System",
+    "allowMultiple": false
+  }
+}

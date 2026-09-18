@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Lists available platform power modes and the currently active one.
+# Reads from /sys/firmware/acpi/platform_profile and platform_profile_choices.
+
+CHOICES_FILE="/sys/firmware/acpi/platform_profile_choices"
+PROFILE_FILE="/sys/firmware/acpi/platform_profile"
+
+if [[ ! -r "$CHOICES_FILE" ]]; then
+  exit 0
+fi
+
+choices=$(cat "$CHOICES_FILE" 2>/dev/null)
+current=$(cat "$PROFILE_FILE" 2>/dev/null)
+
+if [[ -z "$choices" ]]; then
+  exit 0
+fi
+
+for choice in $choices; do
+  active="0"
+  if [[ "$choice" == "$current" ]]; then
+    active="1"
+  fi
+  echo -e "${choice}\t${active}"
+done

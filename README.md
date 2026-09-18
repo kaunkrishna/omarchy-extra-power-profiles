@@ -1,4 +1,4 @@
-# kaun.power - Extra Power Profiles for Omarchy
+# kaun.power-profiles - Extra Power Profiles for Omarchy
 
 An [Omarchy](https://omarchy.org/) shell plugin that extends the built-in battery/power panel with additional platform power profiles (e.g., Quiet, Turbo, Custom) for laptops that support ACPI `platform_profile`.
 
